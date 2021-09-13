@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Post, ValidationPipe } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  NotFoundException,
+  Param,
+  Post,
+  ValidationPipe,
+} from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UsersService } from './users.service';
 
@@ -9,6 +17,15 @@ export class UsersController {
   @Get()
   findAll() {
     return this.usersService.findAll();
+  }
+
+  @Get(':username')
+  async findOne(@Param('username') username: string) {
+    const user = await this.usersService.findOne(username);
+    if (!user) {
+      throw new NotFoundException('Could not find user');
+    }
+    return user;
   }
 
   @Post()
