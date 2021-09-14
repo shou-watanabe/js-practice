@@ -5,11 +5,12 @@ import {
   NotFoundException,
   Param,
   Post,
+  UseGuards,
   ValidationPipe,
 } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UsersService } from './users.service';
-
+import { AuthGuard } from '@nestjs/passport';
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
@@ -20,6 +21,7 @@ export class UsersController {
   }
 
   @Get(':username')
+  @UseGuards(AuthGuard('jwt'))
   async findOne(@Param('username') username: string) {
     const user = await this.usersService.findOne(username);
     if (!user) {
